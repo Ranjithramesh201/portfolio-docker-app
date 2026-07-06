@@ -19,6 +19,8 @@
 
 <p>I am learning AWS, Docker, Git, CI/CD and DevOps.</p>
 
+<p>I modified the HTML in VS Code, committed the change, and pushed it to GitHub. That triggered a GitHub Actions workflow, which checked out the repository, built a new Docker image, authenticated with Docker Hub using GitHub Secrets, pushed the updated image, connected to my EC2 instance over SSH, executed docker compose pull to download the new image, and then ran docker compose up -d to restart the container. Since Nginx was already configured as a reverse proxy with SSL, the updated website became available immediately without any manual intervention."  </p>
+
 <script src="script.js"></script>
 
 </body>

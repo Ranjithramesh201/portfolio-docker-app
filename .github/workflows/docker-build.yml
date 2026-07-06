@@ -38,7 +38,7 @@ jobs:
           docker push \
           ${{ secrets.DOCKERHUB_USERNAME }}/portfolio-app:latest
 
-            - name: Deploy to AWS EC2
+        - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}

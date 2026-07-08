@@ -12,3 +12,6 @@ EXPOSE 80
 
 # Start Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+CMD wget --spider -q http://localhost || exit 1

@@ -1,0 +1,40 @@
+name: Rollback Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Enter Docker Image Tag (Git SHA)"
+        required: true
+        type: string
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Rollback Deployment
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /opt/portfolio-app
+
+            sed -i "s|image: .*|image: ranjith201/portfolio-app:${{ github.event.inputs.image_tag }}|" docker-compose.yml
+
+            echo "========== Updated docker-compose.yml =========="
+            cat docker-compose.yml
+
+            echo "========== Pulling Docker Image =========="
+            docker compose pull
+
+            echo "========== Starting Container =========="
+            docker compose up -d
+
+            echo "========== Removing Unused Images =========="
+            docker image prune -f
+
+            echo "========== Running Containers =========="
+            docker ps

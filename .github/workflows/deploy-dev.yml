@@ -1,0 +1,51 @@
+name: Deploy Development
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/portfolio-app:dev-latest \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/portfolio-app:dev-${{ github.sha }} \
+          .
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/portfolio-app:dev-latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/portfolio-app:dev-${{ github.sha }}
+
+      - name: Deploy Development
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /opt/portfolio-dev
+
+            echo "IMAGE_TAG=dev-latest" > .env
+
+            docker compose pull
+
+            docker compose up -d
+
+            docker image prune -f
+
+            docker ps

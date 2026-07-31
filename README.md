@@ -210,3 +210,21 @@ GitLab CI expects CI/CD variables: `DOCKER_USERNAME`, `DOCKER_PASSWORD`.
 # Build
 docker build -t portfolio-app:local .
 # Run
+docker run -d -p 8080:80 --name portfolio-app portfolio-app:local
+# Open
+# http://localhost:8080
+# Stop / remove
+docker stop portfolio-app && docker rm portfolio-app
+```
+---
+## Learning Goals Covered
+- Writing a minimal **Dockerfile** for a static site on Nginx  
+- Using **`.dockerignore`** and **HEALTHCHECK**  
+- Automating **build → push → deploy** with GitHub Actions  
+- Separating **dev vs prod** with branches and image tags  
+- Deploying to **AWS EC2** over **SSH** with Docker Compose  
+- Performing a **manual rollback** by image tag  
+- Comparing **GitHub Actions** vs **GitLab CI** for the same image build  
+---
+## Disclaimer
+This project is a **hands-on DevOps practice example**. It is not hardened for production (e.g. pinned base image digests, scanning, blue/green, zero-downtime strategies, or secret rotation policies). Use it to learn the pipeline and container workflow, then harden before real workloads.
